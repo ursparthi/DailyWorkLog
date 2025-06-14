@@ -82,7 +82,7 @@ export default function DailyLogPage() {
   // Load saved meters for selected date and employee
   useEffect(() => {
     const logs = getDailyLogs();
-    const entry = logs[date]?.find((e: any) => e.employeeName === employeeName);
+    const entry = logs[date]?.find((e: DailyLogEntry) => e.employeeName === employeeName);
     if (entry && entry.meters) {
       setMeters(entry.meters);
     } else {
@@ -122,7 +122,7 @@ export default function DailyLogPage() {
       date,
       grandTotal,
     };
-    logs[date] = logs[date]?.filter((e: any) => e.employeeName !== employeeName) || [];
+    logs[date] = logs[date]?.filter((e: DailyLogEntry) => e.employeeName !== employeeName) || [];
     logs[date].push(entry);
     saveDailyLogs(logs);
     // Save employee name to history
@@ -131,9 +131,9 @@ export default function DailyLogPage() {
     saveEmployeeNameHistory(history);
     setNameHistory(history);
     // --- Add/update Employee Ledger entry ---
-    let ledger = getLedger();
+    const ledger = getLedger();
     // Check if entry for this date and employee exists
-    const idx = ledger.findIndex((e: any) => e.date === date && e.employeeName === employeeName.trim());
+    const idx = ledger.findIndex((e: EmployeeLedgerEntry) => e.date === date && e.employeeName === employeeName.trim());
     const newLedgerEntry = {
       id: idx !== -1 ? ledger[idx].id : uuidv4(),
       date,
