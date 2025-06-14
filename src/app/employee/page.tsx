@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Pencil, Trash2, Save, X, Eraser } from "lucide-react";
+import { Pencil, Trash2, Save, X } from "lucide-react";
 import type { EmployeeLedgerEntry } from "../../lib/types";
 
 // Helper to get ledger entries from localStorage

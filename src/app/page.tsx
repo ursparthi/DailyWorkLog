@@ -2,8 +2,16 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Pencil } from "lucide-react";
-import type { Product } from "../lib/types";
 import { v4 as uuidv4 } from "uuid";
+import type { Product, EmployeeLedgerEntry } from "../lib/types";
+
+type DailyLogEntry = {
+  employeeName: string;
+  meters: Record<string, string>;
+  date: string;
+  grandTotal: number;
+};
+type DailyLogs = Record<string, DailyLogEntry[]>;
 
 // Helper to get products from localStorage
 function getProducts(): Product[] {
@@ -23,22 +31,22 @@ function saveEmployeeNameHistory(names: string[]) {
 }
 
 // Helper to get/set daily logs
-function getDailyLogs() {
+function getDailyLogs(): DailyLogs {
   if (typeof window === "undefined") return {};
   const data = localStorage.getItem("wagewise-daily-logs");
   return data ? JSON.parse(data) : {};
 }
-function saveDailyLogs(logs: any) {
+function saveDailyLogs(logs: DailyLogs) {
   localStorage.setItem("wagewise-daily-logs", JSON.stringify(logs));
 }
 
 // Helper to get/set employee ledger
-function getLedger() {
+function getLedger(): EmployeeLedgerEntry[] {
   if (typeof window === "undefined") return [];
   const data = localStorage.getItem("wagewise-employee-ledger");
   return data ? JSON.parse(data) : [];
 }
-function saveLedger(entries: any[]) {
+function saveLedger(entries: EmployeeLedgerEntry[]) {
   localStorage.setItem("wagewise-employee-ledger", JSON.stringify(entries));
 }
 
