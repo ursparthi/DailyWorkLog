@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Pencil, Trash2, Save, X } from "lucide-react";
+import { Pencil, Trash2, Save, X, RefreshCw } from "lucide-react";
 import type { EmployeeLedgerEntry } from "../../lib/types";
 
 // Helper to get ledger entries from localStorage
@@ -271,6 +271,15 @@ export default function EmployeeLedgerPage() {
             </table>
           </div>
         </div>
+      </div>
+      {/* Clear All Button at the bottom */}
+      <div className="flex justify-end p-6">
+        <button
+          className="flex items-center gap-2 font-bold text-green-700 dark:text-green-400 border-2 border-green-500 dark:border-green-400 bg-green-50 dark:bg-green-900 px-5 py-2 rounded-lg shadow hover:bg-green-100 dark:hover:bg-green-800 transition text-lg"
+          onClick={() => setClearAll(true)}
+        >
+          <RefreshCw size={22} className="font-bold" /> CLEAR ALL
+        </button>
       </div>
       {/* Clear all confirmation dialog */}
       {clearAll && (
