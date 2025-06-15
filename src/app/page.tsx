@@ -184,30 +184,30 @@ export default function DailyLogPage() {
   }
 
   // Card header style
-  const cardHeader = "flex items-center gap-2 border-l-4 border-[hsl(var(--primary))] bg-[hsl(var(--muted))] rounded-t px-4 py-2 mb-4";
+  const cardHeader = "flex items-center gap-2 border-l-4 border-blue-600 dark:border-blue-400 bg-gray-100 dark:bg-gray-800 rounded-t px-4 py-2 mb-4";
 
   return (
     <div className="space-y-10">
-      <h1 className="text-3xl font-extrabold tracking-tight mb-6 text-[hsl(var(--primary))]">Daily Work Log</h1>
-      <div className="bg-[hsl(var(--card))] rounded-xl shadow-lg p-0 overflow-hidden">
+      <h1 className="text-3xl font-extrabold tracking-tight mb-6 text-blue-700 dark:text-blue-400">Daily Work Log</h1>
+      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg p-0 overflow-hidden">
         <div className={cardHeader}>
-          <h2 className="text-lg font-bold">Log Entries for {formatDateDisplay(date)}</h2>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Log Entries for {formatDateDisplay(date)}</h2>
         </div>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 pb-2">
           <div>
-            <p className="text-sm text-[hsl(var(--muted-foreground))]">Enter meter readings for each product below. Totals are calculated automatically.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300">Enter meter readings for each product below. Totals are calculated automatically.</p>
           </div>
           <div className="flex gap-2 items-center">
             <input
               type="date"
-              className="border rounded px-3 py-2 bg-[hsl(var(--input))] focus:ring-2 focus:ring-[hsl(var(--primary))]"
+              className="border border-gray-300 dark:border-gray-700 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400"
               value={date}
               max={new Date().toISOString().slice(0, 10)}
               onChange={e => setDate(e.target.value)}
             />
             <input
               type="text"
-              className="border rounded px-3 py-2 bg-[hsl(var(--input))] focus:ring-2 focus:ring-[hsl(var(--primary))]"
+              className="border border-gray-300 dark:border-gray-700 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400"
               placeholder="Enter Employee Name"
               list="employee-names"
               value={employeeName}
@@ -222,34 +222,34 @@ export default function DailyLogPage() {
         </div>
         <div className="overflow-x-auto px-6">
           <table className="min-w-full border text-sm rounded-lg overflow-hidden">
-            <thead className="bg-[hsl(var(--muted))]">
+            <thead className="bg-gray-100 dark:bg-gray-800">
               <tr>
-                <th className="px-4 py-2 text-left font-semibold tracking-wide">PRODUCT</th>
-                <th className="px-4 py-2 text-left font-semibold tracking-wide">RATE (₹)</th>
-                <th className="px-4 py-2 text-left font-semibold tracking-wide">METER</th>
-                <th className="px-4 py-2 text-left font-semibold tracking-wide">TOTAL (₹)</th>
-                <th className="px-4 py-2 text-center font-semibold tracking-wide">EDIT</th>
+                <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">PRODUCT</th>
+                <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">RATE (₹)</th>
+                <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">METER</th>
+                <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">TOTAL (₹)</th>
+                <th className="px-4 py-2 text-center font-semibold tracking-wide text-gray-900 dark:text-gray-100">EDIT</th>
               </tr>
             </thead>
             <tbody>
               {products.map((product, idx) => (
-                <tr key={product.id} className={idx % 2 === 0 ? "bg-white" : "bg-[hsl(var(--muted))]"}>
-                  <td className="px-4 py-2">{product.name}</td>
-                  <td className="px-4 py-2">{product.rate.toFixed(2)}</td>
+                <tr key={product.id} className={idx % 2 === 0 ? "bg-white dark:bg-zinc-900" : "bg-gray-50 dark:bg-zinc-800"}>
+                  <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{product.name}</td>
+                  <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{product.rate.toFixed(2)}</td>
                   <td className="px-4 py-2">
                     <input
                       type="number"
-                      className="w-24 border rounded px-2 py-1 bg-[hsl(var(--input))] focus:ring-2 focus:ring-[hsl(var(--primary))]"
+                      className="w-24 border border-gray-300 dark:border-gray-700 rounded px-2 py-1 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400"
                       value={meters[product.id] || "0"}
                       min={0}
                       step={0.01}
                       onChange={e => handleMeterChange(product.id, e.target.value)}
                     />
                   </td>
-                  <td className="px-4 py-2 font-semibold text-blue-700">{formatINR(rowTotals[idx])}</td>
+                  <td className="px-4 py-2 font-semibold text-blue-700 dark:text-blue-400">{formatINR(rowTotals[idx])}</td>
                   <td className="px-4 py-2 text-center">
                     <button
-                      className="text-blue-600 hover:text-blue-800 p-2 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--primary)/0.1)]"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                       title="Edit Product"
                       onClick={() => router.push("/products")}
                     >
@@ -260,9 +260,9 @@ export default function DailyLogPage() {
               ))}
             </tbody>
             <tfoot>
-              <tr className="bg-[hsl(var(--muted))] font-bold text-base">
-                <td colSpan={3} className="px-4 py-2 text-right tracking-wider">GRAND TOTAL</td>
-                <td className="px-4 py-2 text-blue-700">{formatINR(grandTotal)}</td>
+              <tr className="bg-gray-100 dark:bg-gray-800 font-bold text-base">
+                <td colSpan={3} className="px-4 py-2 text-right tracking-wider text-gray-900 dark:text-gray-100">GRAND TOTAL</td>
+                <td className="px-4 py-2 text-blue-700 dark:text-blue-400">{formatINR(grandTotal)}</td>
                 <td></td>
               </tr>
             </tfoot>
@@ -270,13 +270,13 @@ export default function DailyLogPage() {
         </div>
         <div className="flex gap-2 justify-end mt-6 px-6 pb-4">
           <button
-            className="bg-[hsl(var(--destructive))] text-white px-5 py-2 rounded-lg shadow hover:bg-red-700 font-semibold transition"
+            className="bg-red-600 dark:bg-red-500 text-white px-5 py-2 rounded-lg shadow hover:bg-red-700 dark:hover:bg-red-400 font-semibold transition"
             onClick={handleResetMeters}
           >
             Reset All Meters
           </button>
           <button
-            className="bg-[hsl(var(--primary))] text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 font-semibold transition"
+            className="bg-blue-600 dark:bg-blue-500 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 dark:hover:bg-blue-400 font-semibold transition"
             onClick={handleSaveEntries}
           >
             Save Entries
@@ -285,7 +285,7 @@ export default function DailyLogPage() {
       </div>
       {/* Toast notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 bg-[hsl(var(--primary))] text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50">
+        <div className="fixed bottom-6 right-6 bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50">
           <span className="font-bold">✔</span> {toast}
         </div>
       )}
