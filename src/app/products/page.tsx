@@ -74,16 +74,17 @@ export default function ProductsPage() {
     setDeleteId(null);
   }
 
-  const cardHeader = "flex items-center gap-2 border-l-4 border-[hsl(var(--primary))] bg-[hsl(var(--muted))] rounded-t px-4 py-2 mb-4";
+  const cardHeader =
+    "flex items-center gap-2 border-l-4 border-blue-600 dark:border-blue-400 bg-gray-100 dark:bg-gray-800 rounded-t px-4 py-2 mb-4";
 
   return (
     <div className="space-y-10">
-      <div className="bg-[hsl(var(--card))] rounded-xl shadow-lg p-0 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg p-0 overflow-hidden">
         <div className={cardHeader}>
-          <h2 className="text-xl font-bold">Add New Product</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Add New Product</h2>
         </div>
         <div className="p-6">
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mb-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
             Define a new product type and its rate for wage calculation.
           </p>
           <form onSubmit={handleAddProduct} className="space-y-4 max-w-xl">
@@ -91,7 +92,7 @@ export default function ProductsPage() {
               <input
                 type="text"
                 placeholder="e.g., Bricks, Tiles"
-                className="w-full border rounded px-3 py-2 bg-[hsl(var(--input))] focus:ring-2 focus:ring-[hsl(var(--primary))]"
+                className="w-full border border-gray-300 dark:border-gray-700 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400"
                 value={name}
                 onChange={e => setName(e.target.value)}
                 maxLength={50}
@@ -102,7 +103,7 @@ export default function ProductsPage() {
               <input
                 type="number"
                 placeholder="0"
-                className="w-full border rounded px-3 py-2 bg-[hsl(var(--input))] focus:ring-2 focus:ring-[hsl(var(--primary))]"
+                className="w-full border border-gray-300 dark:border-gray-700 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400"
                 value={rate}
                 onChange={e => setRate(e.target.value)}
                 min={0}
@@ -110,48 +111,48 @@ export default function ProductsPage() {
                 required
               />
             </div>
-            {error && <div className="text-red-600 text-sm">{error}</div>}
+            {error && <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>}
             <button
               type="submit"
-              className="flex items-center gap-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-5 py-2 rounded-lg shadow hover:bg-blue-700 font-semibold transition"
+              className="flex items-center gap-2 bg-blue-600 dark:bg-blue-500 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 dark:hover:bg-blue-400 font-semibold transition"
             >
               <PlusCircle size={18} /> Add Product
             </button>
           </form>
         </div>
       </div>
-      <div className="bg-[hsl(var(--card))] rounded-xl shadow-lg p-0 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg p-0 overflow-hidden">
         <div className={cardHeader}>
-          <h2 className="text-lg font-bold">Existing Products</h2>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Existing Products</h2>
         </div>
         <div className="p-6">
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mb-4">
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
             List of currently defined products and their rates.
           </p>
           <div className="overflow-x-auto">
             <table className="min-w-full border text-sm rounded-lg overflow-hidden">
-              <thead className="bg-[hsl(var(--muted))]">
+              <thead className="bg-gray-100 dark:bg-gray-800">
                 <tr>
-                  <th className="px-4 py-2 text-left font-semibold tracking-wide">Name</th>
-                  <th className="px-4 py-2 text-left font-semibold tracking-wide">Rate (per unit)</th>
-                  <th className="px-4 py-2 text-center font-semibold tracking-wide">Actions</th>
+                  <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">Name</th>
+                  <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">Rate (per unit)</th>
+                  <th className="px-4 py-2 text-center font-semibold tracking-wide text-gray-900 dark:text-gray-100">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {products.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="text-center py-6 text-[hsl(var(--muted-foreground))]">
+                    <td colSpan={3} className="text-center py-6 text-gray-400 dark:text-gray-500">
                       No products defined yet.
                     </td>
                   </tr>
                 ) : (
                   products.map((product, idx) => (
-                    <tr key={product.id} className={idx % 2 === 0 ? "bg-white" : "bg-[hsl(var(--muted))]"}>
-                      <td className="px-4 py-2">{product.name}</td>
-                      <td className="px-4 py-2">{product.rate.toFixed(2)}</td>
+                    <tr key={product.id} className={idx % 2 === 0 ? "bg-white dark:bg-zinc-900" : "bg-gray-50 dark:bg-zinc-800"}>
+                      <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{product.name}</td>
+                      <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{product.rate.toFixed(2)}</td>
                       <td className="px-4 py-2 text-center">
                         <button
-                          className="text-red-600 hover:text-red-800 p-2 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--destructive)/0.1)]"
+                          className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-red-900/20"
                           title="Delete"
                           onClick={() => setDeleteId(product.id)}
                           type="button"
@@ -161,15 +162,15 @@ export default function ProductsPage() {
                         {/* Delete confirmation dialog */}
                         {deleteId === product.id && (
                           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-                            <div className="bg-white rounded shadow p-6 max-w-xs w-full">
-                              <div className="mb-4">Are you sure you want to delete <b>{product.name}</b>?</div>
+                            <div className="bg-white dark:bg-zinc-900 rounded shadow p-6 max-w-xs w-full">
+                              <div className="mb-4 text-gray-900 dark:text-gray-100">Are you sure you want to delete <b>{product.name}</b>?</div>
                               <div className="flex gap-2 justify-end">
                                 <button
-                                  className="px-3 py-1 rounded bg-[hsl(var(--muted))]"
+                                  className="px-3 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                                   onClick={() => setDeleteId(null)}
                                 >Cancel</button>
                                 <button
-                                  className="px-3 py-1 rounded bg-[hsl(var(--destructive))] text-white"
+                                  className="px-3 py-1 rounded bg-red-600 dark:bg-red-500 text-white"
                                   onClick={() => handleDeleteProduct(product.id)}
                                 >Delete</button>
                               </div>
