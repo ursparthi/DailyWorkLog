@@ -50,6 +50,13 @@ function saveLedger(entries: EmployeeLedgerEntry[]) {
   localStorage.setItem("wagewise-employee-ledger", JSON.stringify(entries));
 }
 
+// Helper to get employees from localStorage
+function getEmployees() {
+  if (typeof window === "undefined") return [];
+  const data = localStorage.getItem("wagewise-employees");
+  return data ? JSON.parse(data) : [];
+}
+
 // Helper to format currency
 function formatINR(amount: number) {
   return amount.toLocaleString("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2 });
@@ -59,6 +66,9 @@ export default function DailyLogPage() {
   const router = useRouter();
   // State for products
   const [products, setProducts] = useState<Product[]>([]);
+  // State for employees
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [selectedClass, setSelectedClass] = useState<"A" | "B" | "C" | "D">("A");
   // State for date (default today, yyyy-MM-dd)
   const [date, setDate] = useState(() => {
     const today = new Date();
@@ -77,6 +87,7 @@ export default function DailyLogPage() {
   useEffect(() => {
     setProducts(getProducts());
     setNameHistory(getEmployeeNameHistory());
+    setEmployees(getEmployees());
   }, []);
 
   // Load saved meters for selected date and employee
@@ -205,6 +216,32 @@ export default function DailyLogPage() {
               max={new Date().toISOString().slice(0, 10)}
               onChange={e => setDate(e.target.value)}
             />
+            {/* Class dropdown */}
+            <select
+              className="border border-gray-300 dark:border-gray-700 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 font-bold"
+              value={selectedClass}
+              onChange={e => setSelectedClass(e.target.value as "A" | "B" | "C" | "D")}
+            >
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+            {/* Class badge */}
+            <span
+              className={
+                "px-2 py-1 rounded text-xs font-bold " +
+                (selectedClass === "A"
+                  ? "bg-blue-500 text-white"
+                  : selectedClass === "B"
+                  ? "bg-green-500 text-white"
+                  : selectedClass === "C"
+                  ? "bg-yellow-400 text-black"
+                  : "bg-red-500 text-white")
+              }
+            >
+              {selectedClass}
+            </span>
             <input
               type="text"
               className="border border-gray-300 dark:border-gray-700 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400"
@@ -214,8 +251,8 @@ export default function DailyLogPage() {
               onChange={e => setEmployeeName(e.target.value)}
             />
             <datalist id="employee-names">
-              {nameHistory.map(name => (
-                <option key={name} value={name} />
+              {employees.filter(emp => emp.classType === selectedClass).map(emp => (
+                <option key={emp.id} value={emp.name} />
               ))}
             </datalist>
           </div>

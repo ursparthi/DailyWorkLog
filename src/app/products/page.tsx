@@ -49,6 +49,7 @@ export default function ProductsPage() {
   // Employee state
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [newEmp, setNewEmp] = useState<{ name: string; classType: "A" | "B" | "C" | "D"; phone: string }>({ name: "", classType: "A", phone: "" });
+  const [addingNewEmp, setAddingNewEmp] = useState(false);
   const [editEmpId, setEditEmpId] = useState<string | null>(null);
   const [editEmp, setEditEmp] = useState<{ name: string; classType: "A" | "B" | "C" | "D"; phone: string }>({ name: "", classType: "A", phone: "" });
 
@@ -117,6 +118,17 @@ export default function ProductsPage() {
     setEmployees(updated);
     saveEmployees(updated);
     setNewEmp({ name: "", classType: "A", phone: "" });
+    setAddingNewEmp(false);
+  }
+
+  function handleStartAddEmployee() {
+    setNewEmp({ name: "", classType: "A", phone: "" });
+    setAddingNewEmp(true);
+  }
+
+  function handleCancelAddEmployee() {
+    setNewEmp({ name: "", classType: "A", phone: "" });
+    setAddingNewEmp(false);
   }
 
   // Delete employee
@@ -272,8 +284,8 @@ export default function ProductsPage() {
             <p className="text-sm text-gray-600 dark:text-gray-300">Add and manage employee details below.</p>
             <button
               className="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-semibold hover:underline"
-              onClick={() => setNewEmp({ name: "", classType: "A", phone: "" })}
-              disabled={!!newEmp.name || !!newEmp.phone}
+              onClick={handleStartAddEmployee}
+              disabled={addingNewEmp}
             >
               <PlusCircle size={20} /> Add Employee
             </button>
@@ -291,7 +303,7 @@ export default function ProductsPage() {
               </thead>
               <tbody>
                 {/* New employee row */}
-                {(!!newEmp.name || !!newEmp.phone) && (
+                {addingNewEmp && (
                   <tr className="bg-gray-50 dark:bg-zinc-800">
                     <td className="px-4 py-2 text-gray-900 dark:text-gray-100 font-semibold">{employees.length + 1}</td>
                     <td className="px-4 py-2">
@@ -329,8 +341,16 @@ export default function ProductsPage() {
                         className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 p-2 rounded-full"
                         title="Save"
                         onClick={handleAddEmployee}
+                        disabled={!newEmp.name.trim() || !newEmp.phone.trim()}
                       >
                         <Save size={18} />
+                      </button>
+                      <button
+                        className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 p-2 rounded-full"
+                        title="Cancel"
+                        onClick={handleCancelAddEmployee}
+                      >
+                        <X size={18} />
                       </button>
                     </td>
                   </tr>
