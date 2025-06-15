@@ -17,10 +17,18 @@ function saveLedger(entries: EmployeeLedgerEntry[]) {
 function formatINR(amount: number) {
   return amount.toLocaleString("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2 });
 }
+// Helper to get employees from localStorage
+function getEmployees() {
+  if (typeof window === "undefined") return [];
+  const data = localStorage.getItem("wagewise-employees");
+  return data ? JSON.parse(data) : [];
+}
 
 export default function EmployeeLedgerPage() {
   // State for ledger entries
   const [entries, setEntries] = useState<EmployeeLedgerEntry[]>([]);
+  // State for employees
+  const [employees, setEmployees] = useState<any[]>([]);
   // State for editing (row id)
   const [editingId, setEditingId] = useState<string | null>(null);
   // State for edit fields
@@ -35,6 +43,7 @@ export default function EmployeeLedgerPage() {
   // Load ledger entries on mount
   useEffect(() => {
     setEntries(getLedger());
+    setEmployees(getEmployees());
   }, []);
 
   // Handle advance/repay change
@@ -164,7 +173,29 @@ export default function EmployeeLedgerPage() {
                           onChange={e => setEditFields(f => ({ ...f, name: e.target.value }))}
                         />
                       ) : (
-                        entry.employeeName
+                        <>
+                          {entry.employeeName}
+                          {(() => {
+                            const emp = employees.find(e => e.name === entry.employeeName);
+                            if (!emp) return null;
+                            return (
+                              <span
+                                className={
+                                  "ml-2 px-2 py-1 rounded text-xs font-bold " +
+                                  (emp.classType === "A"
+                                    ? "bg-blue-500 text-white"
+                                    : emp.classType === "B"
+                                    ? "bg-green-500 text-white"
+                                    : emp.classType === "C"
+                                    ? "bg-yellow-400 text-black"
+                                    : "bg-red-500 text-white")
+                                }
+                              >
+                                {emp.classType}
+                              </span>
+                            );
+                          })()}
+                        </>
                       )}
                     </td>
                     <td className="px-4 py-2 text-gray-900 dark:text-gray-100">

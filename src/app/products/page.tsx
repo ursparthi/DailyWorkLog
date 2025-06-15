@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Trash2, PlusCircle } from "lucide-react";
+import { Trash2, PlusCircle, Save, Pencil, X } from "lucide-react";
 import type { Product } from "../../lib/types";
 
 // Helper to get products from localStorage
@@ -16,6 +16,26 @@ function saveProducts(products: Product[]) {
   localStorage.setItem("wagewise-products", JSON.stringify(products));
 }
 
+// Employee type
+interface Employee {
+  id: string;
+  name: string;
+  classType: "A" | "B" | "C" | "D";
+  phone: string;
+}
+
+// Helper to get employees from localStorage
+function getEmployees(): Employee[] {
+  if (typeof window === "undefined") return [];
+  const data = localStorage.getItem("wagewise-employees");
+  return data ? JSON.parse(data) : [];
+}
+
+// Helper to save employees to localStorage
+function saveEmployees(employees: Employee[]) {
+  localStorage.setItem("wagewise-employees", JSON.stringify(employees));
+}
+
 export default function ProductsPage() {
   // State for products
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,10 +46,20 @@ export default function ProductsPage() {
   const [error, setError] = useState("");
   // State for delete confirmation
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  // Employee state
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [newEmp, setNewEmp] = useState<{ name: string; classType: "A" | "B" | "C" | "D"; phone: string }>({ name: "", classType: "A", phone: "" });
+  const [editEmpId, setEditEmpId] = useState<string | null>(null);
+  const [editEmp, setEditEmp] = useState<{ name: string; classType: "A" | "B" | "C" | "D"; phone: string }>({ name: "", classType: "A", phone: "" });
 
   // Load products from localStorage on mount
   useEffect(() => {
     setProducts(getProducts());
+  }, []);
+
+  // Load employees from localStorage on mount
+  useEffect(() => {
+    setEmployees(getEmployees());
   }, []);
 
   // Handle add product
@@ -72,6 +102,52 @@ export default function ProductsPage() {
     setProducts(updated);
     saveProducts(updated);
     setDeleteId(null);
+  }
+
+  // Add employee
+  function handleAddEmployee() {
+    if (!newEmp.name.trim() || !newEmp.phone.trim()) return;
+    const newEmployee: Employee = {
+      id: uuidv4(),
+      name: newEmp.name.trim(),
+      classType: newEmp.classType,
+      phone: newEmp.phone.trim(),
+    };
+    const updated = [...employees, newEmployee];
+    setEmployees(updated);
+    saveEmployees(updated);
+    setNewEmp({ name: "", classType: "A", phone: "" });
+  }
+
+  // Delete employee
+  function handleDeleteEmployee(id: string) {
+    const updated = employees.filter(e => e.id !== id);
+    setEmployees(updated);
+    saveEmployees(updated);
+  }
+
+  // Start editing
+  function handleEditEmployee(id: string) {
+    const emp = employees.find(e => e.id === id);
+    if (emp) {
+      setEditEmpId(id);
+      setEditEmp({ name: emp.name, classType: emp.classType, phone: emp.phone });
+    }
+  }
+
+  // Save edit
+  function handleSaveEditEmployee(id: string) {
+    const updated = employees.map(e =>
+      e.id === id ? { ...e, name: editEmp.name.trim(), classType: editEmp.classType, phone: editEmp.phone.trim() } : e
+    );
+    setEmployees(updated);
+    saveEmployees(updated);
+    setEditEmpId(null);
+  }
+
+  // Cancel edit
+  function handleCancelEditEmployee() {
+    setEditEmpId(null);
   }
 
   const cardHeader =
@@ -176,6 +252,187 @@ export default function ProductsPage() {
                               </div>
                             </div>
                           </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      {/* Employee Details Section */}
+      <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg p-0 overflow-hidden">
+        <div className={cardHeader}>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Employee Details</h2>
+        </div>
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-sm text-gray-600 dark:text-gray-300">Add and manage employee details below.</p>
+            <button
+              className="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+              onClick={() => setNewEmp({ name: "", classType: "A", phone: "" })}
+              disabled={!!newEmp.name || !!newEmp.phone}
+            >
+              <PlusCircle size={20} /> Add Employee
+            </button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full border text-sm rounded-lg overflow-hidden">
+              <thead className="bg-gray-100 dark:bg-gray-800">
+                <tr>
+                  <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">S/N</th>
+                  <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">Name</th>
+                  <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">Class</th>
+                  <th className="px-4 py-2 text-left font-semibold tracking-wide text-gray-900 dark:text-gray-100">Phone Number</th>
+                  <th className="px-4 py-2 text-center font-semibold tracking-wide text-gray-900 dark:text-gray-100">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* New employee row */}
+                {(!!newEmp.name || !!newEmp.phone) && (
+                  <tr className="bg-gray-50 dark:bg-zinc-800">
+                    <td className="px-4 py-2 text-gray-900 dark:text-gray-100 font-semibold">{employees.length + 1}</td>
+                    <td className="px-4 py-2">
+                      <input
+                        type="text"
+                        className="border border-gray-300 dark:border-gray-700 rounded px-2 py-1 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100"
+                        placeholder="Name"
+                        value={newEmp.name}
+                        onChange={e => setNewEmp(emp => ({ ...emp, name: e.target.value }))}
+                      />
+                    </td>
+                    <td className="px-4 py-2">
+                      <select
+                        className="border border-gray-300 dark:border-gray-700 rounded px-2 py-1 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100"
+                        value={newEmp.classType}
+                        onChange={e => setNewEmp(emp => ({ ...emp, classType: e.target.value as "A" | "B" | "C" | "D" }))}
+                      >
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                      </select>
+                    </td>
+                    <td className="px-4 py-2">
+                      <input
+                        type="text"
+                        className="border border-gray-300 dark:border-gray-700 rounded px-2 py-1 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100"
+                        placeholder="Phone Number"
+                        value={newEmp.phone}
+                        onChange={e => setNewEmp(emp => ({ ...emp, phone: e.target.value }))}
+                      />
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      <button
+                        className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 p-2 rounded-full"
+                        title="Save"
+                        onClick={handleAddEmployee}
+                      >
+                        <Save size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                )}
+                {/* Existing employees */}
+                {employees.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="text-center py-6 text-gray-400 dark:text-gray-500">
+                      No employees added yet.
+                    </td>
+                  </tr>
+                ) : (
+                  employees.map((emp, idx) => (
+                    <tr key={emp.id} className={idx % 2 === 0 ? "bg-white dark:bg-zinc-900" : "bg-gray-50 dark:bg-zinc-800"}>
+                      <td className="px-4 py-2 text-gray-900 dark:text-gray-100 font-semibold">{idx + 1}</td>
+                      <td className="px-4 py-2 text-gray-900 dark:text-gray-100">
+                        {editEmpId === emp.id ? (
+                          <input
+                            type="text"
+                            className="border border-gray-300 dark:border-gray-700 rounded px-2 py-1 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100"
+                            value={editEmp.name}
+                            onChange={e => setEditEmp(ed => ({ ...ed, name: e.target.value }))}
+                          />
+                        ) : (
+                          emp.name
+                        )}
+                      </td>
+                      <td className="px-4 py-2">
+                        {editEmpId === emp.id ? (
+                          <select
+                            className="border border-gray-300 dark:border-gray-700 rounded px-2 py-1 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100"
+                            value={editEmp.classType}
+                            onChange={(e) => setEditEmp(ed => ({ ...ed, classType: e.target.value as "A" | "B" | "C" | "D" }))}
+                          >
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                          </select>
+                        ) : (
+                          <span
+                            className={
+                              emp.classType === "A"
+                                ? "inline-block px-2 py-1 rounded bg-blue-500 text-white text-xs font-bold"
+                                : emp.classType === "B"
+                                ? "inline-block px-2 py-1 rounded bg-green-500 text-white text-xs font-bold"
+                                : emp.classType === "C"
+                                ? "inline-block px-2 py-1 rounded bg-yellow-400 text-black text-xs font-bold"
+                                : "inline-block px-2 py-1 rounded bg-red-500 text-white text-xs font-bold"
+                            }
+                          >
+                            {emp.classType}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2 text-gray-900 dark:text-gray-100">
+                        {editEmpId === emp.id ? (
+                          <input
+                            type="text"
+                            className="border border-gray-300 dark:border-gray-700 rounded px-2 py-1 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-gray-100"
+                            value={editEmp.phone}
+                            onChange={e => setEditEmp(ed => ({ ...ed, phone: e.target.value }))}
+                          />
+                        ) : (
+                          emp.phone
+                        )}
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        {editEmpId === emp.id ? (
+                          <>
+                            <button
+                              className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 p-2 rounded-full"
+                              title="Save"
+                              onClick={() => handleSaveEditEmployee(emp.id)}
+                            >
+                              <Save size={18} />
+                            </button>
+                            <button
+                              className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 p-2 rounded-full"
+                              title="Cancel"
+                              onClick={handleCancelEditEmployee}
+                            >
+                              <X size={18} />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 p-2 rounded-full"
+                              title="Edit"
+                              onClick={() => handleEditEmployee(emp.id)}
+                            >
+                              <Pencil size={18} />
+                            </button>
+                            <button
+                              className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-full"
+                              title="Delete"
+                              onClick={() => handleDeleteEmployee(emp.id)}
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </>
                         )}
                       </td>
                     </tr>
