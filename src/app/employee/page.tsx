@@ -3,6 +3,14 @@ import React, { useEffect, useState } from "react";
 import { Pencil, Trash2, Save, X, RefreshCw } from "lucide-react";
 import type { EmployeeLedgerEntry } from "../../lib/types";
 
+// Add Employee interface
+interface Employee {
+  id: string;
+  name: string;
+  classType: "A" | "B" | "C" | "D";
+  phone: string;
+}
+
 // Helper to get ledger entries from localStorage
 function getLedger(): EmployeeLedgerEntry[] {
   if (typeof window === "undefined") return [];
@@ -28,7 +36,7 @@ export default function EmployeeLedgerPage() {
   // State for ledger entries
   const [entries, setEntries] = useState<EmployeeLedgerEntry[]>([]);
   // State for employees
-  const [employees, setEmployees] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   // State for editing (row id)
   const [editingId, setEditingId] = useState<string | null>(null);
   // State for edit fields

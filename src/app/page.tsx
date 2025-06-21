@@ -62,12 +62,20 @@ function formatINR(amount: number) {
   return amount.toLocaleString("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2 });
 }
 
+// Add Employee interface
+interface Employee {
+  id: string;
+  name: string;
+  classType: "A" | "B" | "C" | "D";
+  phone: string;
+}
+
 export default function DailyLogPage() {
   const router = useRouter();
   // State for products
   const [products, setProducts] = useState<Product[]>([]);
   // State for employees
-  const [employees, setEmployees] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedClass, setSelectedClass] = useState<"A" | "B" | "C" | "D">("A");
   // State for date (default today, yyyy-MM-dd)
   const [date, setDate] = useState(() => {
@@ -78,15 +86,12 @@ export default function DailyLogPage() {
   const [employeeName, setEmployeeName] = useState("");
   // State for meter values (productId -> meter)
   const [meters, setMeters] = useState<{ [id: string]: string }>({});
-  // State for employee name history
-  const [nameHistory, setNameHistory] = useState<string[]>([]);
   // State for toast message
   const [toast, setToast] = useState<string | null>(null);
 
   // Load products and name history on mount
   useEffect(() => {
     setProducts(getProducts());
-    setNameHistory(getEmployeeNameHistory());
     setEmployees(getEmployees());
   }, []);
 
@@ -140,7 +145,6 @@ export default function DailyLogPage() {
     let history = getEmployeeNameHistory();
     history = [employeeName.trim(), ...history.filter(n => n !== employeeName.trim())];
     saveEmployeeNameHistory(history);
-    setNameHistory(history);
     // --- Add/update Employee Ledger entry ---
     const ledger = getLedger();
     // Check if entry for this date and employee exists
